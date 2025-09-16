@@ -1,10 +1,23 @@
 <script setup>
 import Button from "./components/Button.vue"
 import Score from "./components/Score.vue"
+import Card from "./components/Card.vue"
 
 const like = {
   number: 100,
 };
+
+const contentButton = {
+  buttonText: 'перевернуть',
+};
+
+const contentNumber = {
+  number: '01',
+};
+
+function onFlip() {
+  alert('Перевернулась');
+}
 </script>
 
 <template>
@@ -15,6 +28,9 @@ const like = {
     </div>
   </header>
   <main>
+    <ul class="card-list">
+      <Card v-bind="{ ...contentButton, ...contentNumber }" @flip="onFlip()" />
+    </ul>
     <Button>Начать игру</Button>
   </main>
 </template>
@@ -38,5 +54,10 @@ const like = {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-basic-dark);
+}
+.card-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 </style>

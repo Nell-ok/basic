@@ -1,13 +1,13 @@
 <script setup>
 import IconLike from "../icons/IconLike.vue"
-const { number } = defineProps({
-    number: String,
+const props = defineProps({
+    number: Number,
 });
 </script>
 
 <template>
     <div class="score">
-        <span class="score__number">{{ number }}</span>
+        <span class="score__number">{{ props.number }}</span>
         <div class="score__icon">
             <IconLike />
         </div>

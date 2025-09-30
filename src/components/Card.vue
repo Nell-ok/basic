@@ -2,6 +2,10 @@
 defineProps({
     buttonText: String,
     number: String,
+    word: String,
+    translation: String,
+    state: String,
+    statuse: String,
 });
 
 const emit = defineEmits(['flip', 'statusChanged']);
@@ -20,9 +24,7 @@ function handleClick() {
         <div class="card__number">
             <span>{{ number }}</span>
         </div>
-        <p>
-            unadmitted
-        </p>
+        <p>{{ word }}</p>
         <button class="card__button" @click="handleClick()">
             {{ buttonText }}
         </button>

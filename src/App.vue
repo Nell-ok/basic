@@ -1,11 +1,35 @@
 <script setup>
+import { ref } from "vue";
 import Button from "./components/Button.vue"
 import Score from "./components/Score.vue"
 import Card from "./components/Card.vue"
 
-const like = {
+const like = ref({
   number: 100,
-};
+});
+
+const cards = ref([
+  {
+    word: 'unadmitted',
+    translation: 'непризнанный',
+    state: 'close',
+    statuse: 'pending',
+  },
+
+  {
+    word: 'armour-piercer',
+    translation: 'непризнанный',
+    state: 'close',
+    statuse: 'pending',
+  },
+
+  {
+    word: 'stamen',
+    translation: 'бронебойщик',
+    state: 'close',
+    statuse: 'pending',
+  }
+]);
 
 const contentButton = {
   buttonText: 'перевернуть',
@@ -29,7 +53,7 @@ function onFlip() {
   </header>
   <main>
     <ul class="card-list">
-      <Card v-bind="{ ...contentButton, ...contentNumber }" @flip="onFlip()" />
+      <Card v-bind="{ ...cards[0], ...contentButton, ...contentNumber }" @flip="onFlip()" />
     </ul>
     <Button>Начать игру</Button>
   </main>

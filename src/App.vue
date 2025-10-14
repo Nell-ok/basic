@@ -10,29 +10,28 @@ const like = ref({
 
 const cards = ref([
   {
-    word: 'unadmitted',
-    translation: 'непризнанный',
-    state: 'close',
-    statuse: 'pending',
+    id: 1,
+    states: [
+      { state: "close", status: "pending", word: 'unadmitted' },
+      { state: "open", status: "pending", translation: 'непризнанный' },
+      { state: "open", status: "success", translation: 'непризнанный' },
+      { state: "open", status: "fail", translation: 'непризнанный' },
+    ]
   },
-
   {
-    word: 'armour-piercer',
-    translation: 'непризнанный',
-    state: 'close',
-    statuse: 'pending',
-  },
-
-  {
-    word: 'stamen',
-    translation: 'бронебойщик',
-    state: 'close',
-    statuse: 'pending',
+    id: 2,
+    states: [
+      { state: "close", status: "pending", word: 'armour-piercer' },
+      { state: "open", status: "pending", translation: 'бронебойщик' },
+      { state: "open", status: "success", translation: 'бронебойщик' },
+      { state: "open", status: "fail", translation: 'бронебойщик' },
+    ]
   }
 ]);
 
 const contentButton = {
-  buttonText: 'перевернуть',
+  buttonTextClose: 'перевернуть',
+  buttonTextOpen: 'завершено',
 };
 
 const contentNumber = {
@@ -45,22 +44,26 @@ function onFlip() {
 </script>
 
 <template>
-  <header class="header">
+  <header class="center header">
     <div class="header__container">
       <p>Запомни слово</p>
       <Score v-bind="like" />
     </div>
   </header>
-  <main>
-    <ul class="card-list">
-      <Card v-bind="{ ...cards[0], ...contentButton, ...contentNumber }" @flip="onFlip()" />
-    </ul>
+  <main class="center">
+    <div class="card-list">
+      <div v-for="card in cards" :key="card.id">
+        <div v-for="(state, i) in card.states" :key="i">
+          <Card v-bind="{ ...state, ...contentButton, ...contentNumber }" @flip="onFlip()" />
+        </div>
+      </div>
+    </div>
     <Button>Начать игру</Button>
   </main>
 </template>
 
 <style scoped>
-.header {
+.center {
   margin: 0 62px;
 }
 .header__container {
@@ -80,8 +83,7 @@ function onFlip() {
   color: var(--color-basic-dark);
 }
 .card-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  display: flex;
+  justify-content: space-between;
 }
 </style>

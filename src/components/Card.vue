@@ -1,12 +1,22 @@
 <script setup>
-defineProps({
-    buttonText: String,
+import { computed } from 'vue';
+import IconFail from "../icons/IconFail.vue"
+import IconSuccess from "../icons/IconSuccess.vue"
+
+const props = defineProps({
+    buttonTextClose: String,
+    buttonTextOpen: String,
     number: String,
+    id: Number,
     word: String,
     translation: String,
     state: String,
-    statuse: String,
+    status: String,
 });
+
+const isClose = computed(() => props.state === 'close');
+const isPending = computed(() => props.status === 'pending');
+const isSuccess = computed(() => props.status === 'success');
 
 const emit = defineEmits(['flip', 'statusChanged']);
 // Функция — обработчик смены статуса
@@ -20,18 +30,33 @@ function handleClick() {
 </script>
 
 <template>
-    <li class="card">
+    <div class="card">
         <div class="card__number">
-            <span>{{ number }}</span>
+            <span>{{ props.number }}</span>
         </div>
-        <p>{{ word }}</p>
-        <button class="card__button" @click="handleClick()">
-            {{ buttonText }}
-        </button>
-    </li>
-    <!-- Кнопки  появятся после переворота карточки -->
-    <button class="card__check" @click="installStatus('success')">Успешно</button>
-    <button class="card__check" @click="installStatus('fail')">Неудачно</button>
+        <div class="card__status">
+            <span v-if="!isClose && !isPending && isSuccess"><IconSuccess width="48" height="48" /></span>
+            <span v-if="!isClose && !isPending && !isSuccess"><IconFail width="48" height="48" /></span>
+        </div>
+        <p v-if="isClose">{{ props.word }}</p>
+        <p v-else>{{ props.translation }}</p>
+        <template v-if="isClose && isPending">
+            <button class="card__button" @click="handleClick()">
+            {{ props.buttonTextClose }}
+            </button>
+        </template>
+        <template v-else-if="!isClose && isPending">
+            <div class="card__check-wrapp">
+                <button class="card__check card__check--fail" @click="installStatus('success')"><IconFail width="24" height="24" /></button>
+                <button class="card__check card__check--success" @click="installStatus('fail')"><IconSuccess width="24" height="24" /></button>
+            </div>
+        </template>
+        <template v-else>
+            <button class="card__button" @click="handleClick()">
+            {{ props.buttonTextOpen }}
+            </button>
+        </template>
+    </div>
 </template>
 
 <style scoped>
@@ -76,6 +101,12 @@ function handleClick() {
     z-index: 1;
 }
 
+.card__status {
+    position: absolute;
+    top: 4px;
+    z-index: 1;
+}
+
 .card__button {
     position: absolute;
     padding: 0 4px;
@@ -91,7 +122,24 @@ function handleClick() {
     cursor: pointer;
 }
 
+.card__check-wrapp {
+    display: flex;
+    gap: 32px;
+    padding: 0 10px;
+    position: absolute;
+    bottom: 19px;
+    left: 79px;
+    background-color: var(--color-default-light);
+    z-index: 1;
+}
+
 .card__check {
-    display: none;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
 }
 </style>

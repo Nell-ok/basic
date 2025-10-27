@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Button from "./components/Button.vue"
 import Score from "./components/Score.vue"
 import Card from "./components/Card.vue"
@@ -8,26 +8,21 @@ const like = ref({
   number: 100,
 });
 
-const cards = ref([
-  {
-    id: 1,
-    states: [
-      { state: "close", status: "pending", word: 'unadmitted' },
-      { state: "open", status: "pending", translation: 'непризнанный' },
-      { state: "open", status: "success", translation: 'непризнанный' },
-      { state: "open", status: "fail", translation: 'непризнанный' },
-    ]
-  },
-  {
-    id: 2,
-    states: [
-      { state: "close", status: "pending", word: 'armour-piercer' },
-      { state: "open", status: "pending", translation: 'бронебойщик' },
-      { state: "open", status: "success", translation: 'бронебойщик' },
-      { state: "open", status: "fail", translation: 'бронебойщик' },
-    ]
-  }
-]);
+const cards = ref([]);
+
+async function getCards() {
+  const response = await fetch('http://localhost:8080/api/random-words')
+  const data = await response.json()
+  
+  cards.value = data.map(card => ({
+    ...card,
+    state: 'close',
+    status: 'pending',
+    id: `${card.word}-${Math.random()}`
+  }))
+};
+
+onMounted(getCards);
 
 const contentButton = {
   buttonTextClose: 'перевернуть',
@@ -53,9 +48,7 @@ function onFlip() {
   <main class="center">
     <div class="card-list">
       <div v-for="card in cards" :key="card.id">
-        <div v-for="(state, i) in card.states" :key="i">
-          <Card v-bind="{ ...state, ...contentButton, ...contentNumber }" @flip="onFlip()" />
-        </div>
+        <Card v-bind="{ ...card, ...contentButton, ...contentNumber }" @flip="onFlip()" />
       </div>
     </div>
     <Button>Начать игру</Button>
@@ -83,7 +76,11 @@ function onFlip() {
   color: var(--color-basic-dark);
 }
 .card-list {
+  margin-bottom: 100px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  column-gap: 100px;
+  row-gap: 66px;
 }
 </style>

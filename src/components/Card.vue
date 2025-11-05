@@ -7,7 +7,7 @@ const props = defineProps({
     buttonTextClose: String,
     buttonTextOpen: String,
     number: String,
-    id: Number,
+    id: [Number, String],
     word: String,
     translation: String,
     state: String,
@@ -18,14 +18,18 @@ const isClose = computed(() => props.state === 'close');
 const isPending = computed(() => props.status === 'pending');
 const isSuccess = computed(() => props.status === 'success');
 
-const emit = defineEmits(['flip', 'statusChanged']);
-// Функция — обработчик смены статуса
-function installStatus(status) {
-    emit('statusChanged', status);
-}
+const emit = defineEmits(['flip', 'statusChanged', 'reset']);
 
 function handleClick() {
-    emit('flip');
+    emit('flip', props.id);
+}
+
+function installStatus(status) {
+    emit('statusChanged', { id: props.id, status });
+}
+
+function resetCard() {
+    emit('reset', props.id);
 }
 </script>
 
@@ -47,12 +51,12 @@ function handleClick() {
         </template>
         <template v-else-if="!isClose && isPending">
             <div class="card__check-wrapp">
-                <button class="card__check card__check--fail" @click="installStatus('success')"><IconFail width="24" height="24" /></button>
-                <button class="card__check card__check--success" @click="installStatus('fail')"><IconSuccess width="24" height="24" /></button>
+                <button class="card__check card__check--fail" @click="installStatus('fail')"><IconFail width="24" height="24" /></button>
+                <button class="card__check card__check--success" @click="installStatus('success')"><IconSuccess width="24" height="24" /></button>
             </div>
         </template>
-        <template v-else>
-            <button class="card__button" @click="handleClick()">
+        <template v-else-if="!isClose && !isPending">
+            <button class="card__button" @click="resetCard()">
             {{ props.buttonTextOpen }}
             </button>
         </template>
@@ -88,6 +92,10 @@ function handleClick() {
 
 .card:hover {
     filter: drop-shadow(10px 10px 10px var(--color-filter));
+}
+
+.card p {
+    text-align: center;
 }
 
 .card__number {

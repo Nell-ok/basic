@@ -11,6 +11,11 @@ export default [
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
+      globals: {
+        fetch: "readonly",
+        URLSearchParams: "readonly",
+        console: "readonly",
+      },
     },
     rules: {
       "vue/multi-word-component-names": "off", // РћС‚РєР»СЋС‡Р°РµРј С‚СЂРµР±РѕРІР°РЅРёРµ РґР»РёРЅРЅС‹С… РёРјРµРЅ
